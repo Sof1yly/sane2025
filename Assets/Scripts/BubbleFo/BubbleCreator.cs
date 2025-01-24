@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+
 public class BubbleCreator : MonoBehaviour
 {
     public BubbleData[] bubbleDataArray; // Array of BubbleData ScriptableObjects
@@ -22,27 +23,27 @@ public class BubbleCreator : MonoBehaviour
             bubbleObject.name = bubbleData.bubbleName;
 
             // Set the image (SpriteRenderer or UI Image)
-            //var spriteRenderer = bubbleObject.GetComponent<SpriteRenderer>();
-            //if (spriteRenderer != null)
-            //{
-            //    spriteRenderer.sprite = bubbleData.bubbleImage;
-            //}
-
-            var uiImage = bubbleObject.GetComponentInChildren<UnityEngine.UI.Image>();
-            if (uiImage != null)
+            var spriteRenderer = bubbleObject.GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
             {
-                uiImage.sprite = bubbleData.bubbleImage;
+                spriteRenderer.sprite = bubbleData.bubbleImage;
             }
 
+            //var uiImage = bubbleObject.GetComponent<UnityEngine.UI.Image>();
+            //if (uiImage != null)
+            //{
+            //    uiImage.sprite = bubbleData.bubbleImage;
+            //}
+
             // Set the TextMeshPro text
-            var textMeshPro = bubbleObject.GetComponentInChildren<TextMeshProUGUI>();
+            var textMeshPro = bubbleObject.GetComponentInChildren<TextMeshPro>();
             if (textMeshPro != null)
             {
                 textMeshPro.text = bubbleData.bubbleText;
             }
 
             // Additional setup: Log or handle tiers and price
-            Debug.Log($"Created Bubble: {bubbleData.bubbleName},textMeshPro: {bubbleData.bubbleText} Tiers: {bubbleData.bubbleTiers}, Price: {bubbleData.bubblePrice}");
+            Debug.Log($"Created Bubble: {bubbleData.bubbleName}, Tiers: {bubbleData.bubbleTiers}, Price: {bubbleData.bubblePrice}");
         }
     }
 }
