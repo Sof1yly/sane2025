@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "NewBubbleData", menuName = "ScriptableObjects/BubbleData", order = 1)]
 public class BubbleData : ScriptableObject
