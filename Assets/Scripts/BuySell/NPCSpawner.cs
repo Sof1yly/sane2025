@@ -11,6 +11,7 @@ public class NPCSpawner : MonoBehaviour
 
     [Header("Dialog UI")]
     public DialogUI dialogUI; // อ้างอิง DialogUI ใน Scene
+    public GameObject CraftUI;
 
     [Header("Spawn Settings")]
     public int spawnCount = 1;
@@ -32,7 +33,7 @@ public class NPCSpawner : MonoBehaviour
             NPC npcComponent = npcObject.GetComponent<NPC>();
             if (npcComponent != null)
             {
-                npcComponent.Init(npcData, dialogUI);
+                npcComponent.Init(npcData, dialogUI, CraftUI);
             }
 
             // หน่วงนิดหน่อย

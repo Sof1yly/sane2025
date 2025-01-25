@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Jo
   m_EditorClassIdentifier: 
   characterName: Jo
-  characterSprite: {fileID: 21300000, guid: 7128315a86b7afa4cbda70f6f93f9dda, type: 3}
+  characterSprite: {fileID: 21300000, guid: f127d731a95af6c4f9c245d045768095, type: 3}
   animatorCtrl: {fileID: 9100000, guid: 04ce55189c8b7e34aa45992b1ecc56a7, type: 2}
   emotion:
   - Ecstasy
