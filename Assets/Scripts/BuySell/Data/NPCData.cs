@@ -7,5 +7,6 @@ public class NPCData : ScriptableObject
     public Sprite characterSprite;
     public RuntimeAnimatorController animatorCtrl;
     public string[] emotion;
+    public string currentemotion;
     public int score;
 }

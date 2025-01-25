@@ -1,21 +1,21 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class NPC : MonoBehaviour
 {
     [Header("Data")]
-    [SerializeField] private NPCData npcData; // อ้างอิง Data
+    [SerializeField] private NPCData npcData;
 
     [Header("Scene References")]
     public SpriteRenderer spriteRenderer;
     public Animator animator;
 
-    // เรียกใช้เมื่อเราสร้าง NPC ตัวใหม่ 
-    // เพื่อกำหนด npcData และอัปเดต sprite/animator
+    // เรียกใช้หลัง Instantiate เพื่อเซ็ต Data ให้ NPC
     public void Init(NPCData data)
     {
         npcData = data;
 
-        // ตั้งชื่อ GameObject เผื่อดูง่ายใน Hierarchy
+        // ตั้งชื่อ GameObject เพื่อให้ง่ายต่อการดูใน Hierarchy
         gameObject.name = "NPC_" + npcData.characterName;
 
         // ตั้งค่า Sprite
@@ -30,23 +30,22 @@ public class NPC : MonoBehaviour
             animator.runtimeAnimatorController = npcData.animatorCtrl;
         }
 
-        // ถ้ามี Logic เกี่ยวกับ emotion หรือ score
-        // ก็สามารถอัปเดตได้ตรงนี้ เช่น
-        // animator.SetTrigger(npcData.emotion);
+        // ถ้าต้องใช้ currentemotion กับ Animator เช่น:
+        // animator.SetTrigger(npcData.currentemotion);
     }
 
-    // ตัวอย่างฟังก์ชันเรียกเปิดบทสนทนา
-    public void TriggerDialog(DialogUI dialogUI)
+    // เรียกเพื่อให้ NPC แสดงบทสนทนาผ่าน DialogUI
+    // พร้อม Callback เมื่อบทสนทนาจบ
+    public void TriggerDialog(DialogUI dialogUI, int[] dialogIDs, Action onDialogEnd)
     {
         if (dialogUI == null)
         {
             Debug.LogWarning("DialogUI is null!");
+            onDialogEnd?.Invoke();
             return;
         }
 
-        int[] dialogIDs = { 1, 2};
-
-        // เรียก StartDialog โดยส่งชื่อ NPC จาก npcData 
-        dialogUI.StartDialog(npcData.characterName, dialogIDs);
+        // สั่ง DialogUI ให้เริ่มบทสนทนา โดยใช้ npcData.currentemotion เป็น dialogName
+        dialogUI.StartDialog(npcData.currentemotion, dialogIDs, onDialogEnd);
     }
 }

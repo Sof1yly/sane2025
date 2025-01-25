@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -41,14 +42,16 @@ public class DialogUI : MonoBehaviour
     private RandomNumberGenerator rng = new RandomNumberGenerator();
     private Coroutine typingCoroutine;
 
+    private Action onDialogEndCallback;
     private void Awake()
     {
         // ตั้งค่า scale เริ่มต้นให้เป็น 0
         transform.localScale = Vector3.zero;
     }
 
-    public void StartDialog(string dialogName, int[] dialogID)
+    public void StartDialog(string dialogName, int[] dialogID, Action onEndDialogCallback = null)
     {
+        onDialogEndCallback = onEndDialogCallback;
         // 1) กำหนด Sprite ตาม dialogName
         dialogImage.sprite = GetSpriteByDialogName(dialogName);
 
@@ -105,6 +108,8 @@ public class DialogUI : MonoBehaviour
             gameObject.SetActive(false);
             dialogText.text = "End of Dialog.";
         }));
+
+        onDialogEndCallback?.Invoke();
     }
 
     /// <summary>
