@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8812694278799552652
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5661304854112432530}
+  - component: {fileID: 547076250113632285}
+  m_Layer: 0
+  m_Name: ___BubbleCombine___
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5661304854112432530
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8812694278799552652}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.9164607, y: -0.4154731, z: 1337.0951}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &547076250113632285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8812694278799552652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f5ac8aae2aa7ce45a5ffe58b3b49748, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slotA: {fileID: 0}
+  slotB: {fileID: 0}
+  resultSlot: {fileID: 0}
+  bubbleRecipes:
+  - {fileID: 11400000, guid: 5b4322390d9b7ea42b8aabd01993e1c2, type: 2}
+  - {fileID: 11400000, guid: 99826bfc714f5fe42b389063bc4cbfac, type: 2}
+  - {fileID: 11400000, guid: 388c94c8012b74b4d95450c71fc41e46, type: 2}
+  - {fileID: 11400000, guid: 2f8b54995a67143479c55cb55a79a022, type: 2}
+  - {fileID: 11400000, guid: 747a5833e6474b441aae383f959b671b, type: 2}
+  - {fileID: 11400000, guid: 22b69303654a6fb4cbb393fba184274f, type: 2}
+  - {fileID: 11400000, guid: ee301dedbd9125549850a8ac58549f8b, type: 2}
+  - {fileID: 11400000, guid: 847d310db919fa044a300bb953f0d4c4, type: 2}
+  - {fileID: 11400000, guid: 9f1bcda436dd56a42b97df31a4f0c13b, type: 2}
+  - {fileID: 11400000, guid: 7e7a971c6ff52ac439c6d4363428e89c, type: 2}
+  imageToHide1: {fileID: 0}
+  imageToHide2: {fileID: 0}
