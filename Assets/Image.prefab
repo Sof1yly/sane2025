@@ -362,9 +362,29 @@ MonoBehaviour:
   dialogText: {fileID: 3610968428185460695}
   dialogManager: {fileID: 0}
   dialogHistoryManager: {fileID: 0}
-  dialogImage: {fileID: 0}
-  dialogSprites: []
-  defaultSprite: {fileID: 0}
+  dialogImage: {fileID: 435796590022504499}
+  dialogSprites:
+  - dialogName: Ecstasy
+    sprite: {fileID: 0}
+  - dialogName: Pride
+    sprite: {fileID: 0}
+  - dialogName: Nostalgia
+    sprite: {fileID: 0}
+  - dialogName: Excitement
+    sprite: {fileID: 0}
+  - dialogName: Rage
+    sprite: {fileID: 0}
+  - dialogName: Envy
+    sprite: {fileID: 0}
+  - dialogName: Hatred
+    sprite: {fileID: 0}
+  - dialogName: Grief
+    sprite: {fileID: 0}
+  - dialogName: Despair
+    sprite: {fileID: 0}
+  - dialogName: Terror
+    sprite: {fileID: 0}
+  defaultSprite: {fileID: 21300000, guid: 00505d45e688261428a6b1b3456fc667, type: 3}
   audioSource: {fileID: 0}
   scaleUpClip: {fileID: 0}
   scaleDownClip: {fileID: 0}

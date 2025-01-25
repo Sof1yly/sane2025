@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dab083f818bb4c44587e75b0cf15b890, type: 3}
   m_Name: Rage(-)
   m_EditorClassIdentifier: 
-  bubbleName: Rage(-)
+  bubbleName: Rage
   bubbleImage: {fileID: 21300000, guid: 728450d4aedc6b94c9b179c1826ded78, type: 3}
   bubbleText: 
   bubbleTiers: 0

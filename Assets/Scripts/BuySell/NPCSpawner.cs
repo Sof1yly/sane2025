@@ -4,18 +4,20 @@ using UnityEngine;
 public class NPCSpawner : MonoBehaviour
 {
     [Header("NPC Prefab")]
-    public GameObject npcPrefab; // Prefab ที่มี NPC.cs อยู่ภายใน
+    public GameObject npcPrefab; // Prefab ที่มี NPC.cs
 
     [Header("NPC Data")]
-    public NPCData npcData;      // ScriptableObject เก็บข้อมูล
+    public NPCData npcData;
+
+    [Header("Dialog UI")]
+    public DialogUI dialogUI; // อ้างอิง DialogUI ใน Scene
 
     [Header("Spawn Settings")]
-    public int spawnCount = 4;
+    public int spawnCount = 1;
     public Vector3 spawnPosition = new Vector3(0, 0, 0);
 
     private void Start()
     {
-        // เมื่อเกมเริ่ม สั่งให้ Spawn NPC ตามจำนวน
         StartCoroutine(SpawnNPCs());
     }
 
@@ -23,22 +25,18 @@ public class NPCSpawner : MonoBehaviour
     {
         for (int i = 0; i < spawnCount; i++)
         {
-            // 1) Instantiate NPC จาก Prefab
+            // 1) สร้าง NPC
             GameObject npcObject = Instantiate(npcPrefab, spawnPosition, Quaternion.identity);
 
-            // 2) เรียก Init เพื่อให้ NPC จัดการสุ่ม emotion ของตัวเอง
+            // 2) เรียก Init พร้อมส่ง DialogUI
             NPC npcComponent = npcObject.GetComponent<NPC>();
             if (npcComponent != null)
             {
-                npcComponent.Init(npcData);
-            }
-            else
-            {
-                Debug.LogWarning("The spawned prefab does not have an NPC component!");
+                npcComponent.Init(npcData, dialogUI);
             }
 
-            // ตัวอย่าง: หน่วงเวลานิดหน่อยก่อนสร้างตัวถัดไป
-            yield return new WaitForSeconds(0.5f);
+            // หน่วงนิดหน่อย
+            yield return new WaitForSeconds(1f);
         }
 
         Debug.Log("Spawned all NPCs complete!");

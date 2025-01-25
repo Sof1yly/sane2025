@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dab083f818bb4c44587e75b0cf15b890, type: 3}
   m_Name: Despair(-)
   m_EditorClassIdentifier: 
-  bubbleName: Despair(-)
+  bubbleName: Despair
   bubbleImage: {fileID: 21300000, guid: fb29bbe9887f5dc4ea2c3b4b1e1b7f12, type: 3}
   bubbleText: despair
   bubbleTiers: 0

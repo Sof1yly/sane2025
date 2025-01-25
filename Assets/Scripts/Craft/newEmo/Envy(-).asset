@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dab083f818bb4c44587e75b0cf15b890, type: 3}
   m_Name: Envy(-)
   m_EditorClassIdentifier: 
-  bubbleName: Envy(-)
+  bubbleName: Envy
   bubbleImage: {fileID: 21300000, guid: ec5a186cf59e3664fbb51602e178170e, type: 3}
   bubbleText: envy
   bubbleTiers: 0

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dab083f818bb4c44587e75b0cf15b890, type: 3}
   m_Name: Grief(-)
   m_EditorClassIdentifier: 
-  bubbleName: Grief(-)
+  bubbleName: Grief
   bubbleImage: {fileID: 21300000, guid: e99e624eeed918e4ba398ff83cce2474, type: 3}
   bubbleText: 
   bubbleTiers: 0
