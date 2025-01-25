@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pride(+)
   m_EditorClassIdentifier: 
   bubbleName: Pride
-  bubbleImage: {fileID: 21300000, guid: 62be0eee9edefeb4687b5696c5ce75e3, type: 3}
+  bubbleImage: {fileID: 21300000, guid: dd5bf89fd25410841bb763d2861e51b7, type: 3}
   bubbleText: 
   bubbleTiers: 0
   bubblePrice: 0

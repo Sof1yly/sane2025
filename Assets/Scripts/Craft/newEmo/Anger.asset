@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Anger
   m_EditorClassIdentifier: 
   bubbleName: Anger
-  bubbleImage: {fileID: 21300000, guid: df7db1cf973afd84fb554a71c276464a, type: 3}
+  bubbleImage: {fileID: 21300000, guid: 94b213ae43dc02e46bd29b31f009e227, type: 3}
   bubbleText: Anger
   bubbleTiers: 0
   bubblePrice: 0

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Terror(-)
   m_EditorClassIdentifier: 
   bubbleName: Terror
-  bubbleImage: {fileID: 21300000, guid: 75a27d6e8a1c3464593c41b5716519b9, type: 3}
+  bubbleImage: {fileID: 21300000, guid: ea2d911775662ac49ba309bee6e6cfd0, type: 3}
   bubbleText: 
   bubbleTiers: 0
   bubblePrice: 0

@@ -114,7 +114,10 @@ public class BubbleCombiner : MonoBehaviour
                 if (imageToHide1 != null) imageToHide1.SetActive(false);
                 if (imageToHide2 != null) imageToHide2.SetActive(false);
                 if (imageConfirm != null) imageConfirm.SetActive(false);
+
                 if (allUIcom != null) allUIcom.SetActive(false);
+
+
 
                 foundMatch = true;
                 break;  // Stop searching once we find the first valid recipe

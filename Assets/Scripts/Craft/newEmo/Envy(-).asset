@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Envy(-)
   m_EditorClassIdentifier: 
   bubbleName: Envy
-  bubbleImage: {fileID: 21300000, guid: ec5a186cf59e3664fbb51602e178170e, type: 3}
+  bubbleImage: {fileID: 21300000, guid: d15ff222605f8c446ad5a9c353f4014b, type: 3}
   bubbleText: envy
   bubbleTiers: 0
   bubblePrice: 0

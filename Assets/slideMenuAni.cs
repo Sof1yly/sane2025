@@ -15,7 +15,7 @@ public class slideMenuAni : MonoBehaviour
             {
                 bool isOpen = animator.GetBool("show");
 
-                animator.SetBool("show",!isOpen);
+                animator.SetBool("show", !isOpen);
             }
         }
     }

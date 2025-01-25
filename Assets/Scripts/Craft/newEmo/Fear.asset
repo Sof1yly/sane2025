@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Fear
   m_EditorClassIdentifier: 
   bubbleName: Fear
-  bubbleImage: {fileID: 21300000, guid: 9e57146235f4123459b034e752a91bc0, type: 3}
+  bubbleImage: {fileID: 21300000, guid: 24a83473516b4c04092c4cb0a489ce60, type: 3}
   bubbleText: feafd
   bubbleTiers: 0
   bubblePrice: 0
