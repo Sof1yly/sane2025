@@ -51,7 +51,8 @@ public class DialogUI : MonoBehaviour
 
     public void StartDialog(string dialogName, int[] dialogID, Action onEndDialogCallback = null)
     {
-        onDialogEndCallback = onEndDialogCallback;
+       
+       
         // 1) กำหนด Sprite ตาม dialogName
         dialogImage.sprite = GetSpriteByDialogName(dialogName);
 
@@ -109,7 +110,8 @@ public class DialogUI : MonoBehaviour
             dialogText.text = "End of Dialog.";
         }));
 
-        onDialogEndCallback?.Invoke();
+       
+        
     }
 
     /// <summary>

@@ -41,6 +41,7 @@ public class NPCSpawner : MonoBehaviour
             // 2) สร้าง NPC จาก Prefab
             GameObject npcObj = Instantiate(npcPrefab, spawnPosition, Quaternion.identity);
             NPC npcComp = npcObj.GetComponent<NPC>();
+            Debug.Log("Create");
 
             // 3) เซ็ตข้อมูล NPC
             if (npcComp != null)
@@ -61,6 +62,7 @@ public class NPCSpawner : MonoBehaviour
 
                 // 6) ทำลาย NPC ตัวนี้
                 Destroy(npcObj);
+                Debug.Log("Destoy");
             }
             else
             {
