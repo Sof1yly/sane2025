@@ -1,51 +1,59 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class NPC : MonoBehaviour
 {
-    [Header("Data")]
+    [Header("Assigned NPC Data after spawn")]
     [SerializeField] private NPCData npcData;
 
-    [Header("Scene References")]
+    [Header("References")]
     public SpriteRenderer spriteRenderer;
     public Animator animator;
 
-    // เรียกใช้หลัง Instantiate เพื่อเซ็ต Data ให้ NPC
+    // ** ตัวแปรสำหรับเก็บอารมณ์ของ NPC แต่ละตัว (ไม่เกี่ยวกับ ScriptableObject แล้ว) **
+    private string currentemotion;
+
+    /// <summary>
+    /// เรียกใช้หลัง Instantiate เพื่อเซ็ต Data ให้ NPC
+    /// </summary>
     public void Init(NPCData data)
     {
         npcData = data;
 
-        // ตั้งชื่อ GameObject เพื่อให้ง่ายต่อการดูใน Hierarchy
-        gameObject.name = "NPC_" + npcData.characterName;
+        // 1) สุ่ม emotion จาก npcData.emotion
+        if (npcData.emotion != null && npcData.emotion.Length > 0)
+        {
+            int randIndex = Random.Range(0, npcData.emotion.Length);
+            currentemotion = npcData.emotion[randIndex];
+        }
+        else
+        {
+            currentemotion = "Neutral";
+        }
 
-        // ตั้งค่า Sprite
+        // 2) ตั้งชื่อ GameObject ให้เห็นชัด (เช่น NPC_Poring_Happy)
+        gameObject.name = "NPC_" + npcData.characterName + "_" + currentemotion;
+
+        // 3) ตั้งค่า Sprite, Animator
         if (spriteRenderer != null && npcData.characterSprite != null)
         {
             spriteRenderer.sprite = npcData.characterSprite;
         }
 
-        // ตั้งค่า Animator Controller
         if (animator != null && npcData.animatorCtrl != null)
         {
             animator.runtimeAnimatorController = npcData.animatorCtrl;
+
+            // ถ้าอยากให้ animator เล่นท่าทางตรงตาม emotion ด้วย อาจใช้ trigger
+            // animator.SetTrigger(currentemotion);
         }
 
-        // ถ้าต้องใช้ currentemotion กับ Animator เช่น:
-        // animator.SetTrigger(npcData.currentemotion);
+        // ทดสอบ
+        Debug.Log($"[{gameObject.name}] emotion = {currentemotion}");
     }
 
-    // เรียกเพื่อให้ NPC แสดงบทสนทนาผ่าน DialogUI
-    // พร้อม Callback เมื่อบทสนทนาจบ
-    public void TriggerDialog(DialogUI dialogUI, int[] dialogIDs, Action onDialogEnd)
+    // ตัวอย่าง Getter เผื่อภายนอกอยากรู้ว่า NPC ตัวนี้กำลังมี emotion อะไร
+    public string GetCurrentEmotion()
     {
-        if (dialogUI == null)
-        {
-            Debug.LogWarning("DialogUI is null!");
-            onDialogEnd?.Invoke();
-            return;
-        }
-
-        // สั่ง DialogUI ให้เริ่มบทสนทนา โดยใช้ npcData.currentemotion เป็น dialogName
-        dialogUI.StartDialog(npcData.currentemotion, dialogIDs, onDialogEnd);
+        return currentemotion;
     }
 }
