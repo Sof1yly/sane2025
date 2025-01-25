@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Excitement(+)
   m_EditorClassIdentifier: 
   bubbleName: Excitement(+)
-  bubbleImage: {fileID: 0}
-  bubbleText: 
+  bubbleImage: {fileID: 21300000, guid: a82fcb3a4cebfde40a987526aff06467, type: 3}
+  bubbleText: Excitement
   bubbleTiers: 0
   bubblePrice: 0

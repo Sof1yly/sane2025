@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dab083f818bb4c44587e75b0cf15b890, type: 3}
-  m_Name: Pride(+)
+  m_Name: Fear
   m_EditorClassIdentifier: 
-  bubbleName: Pride
-  bubbleImage: {fileID: 21300000, guid: 62be0eee9edefeb4687b5696c5ce75e3, type: 3}
-  bubbleText: 
+  bubbleName: Fear
+  bubbleImage: {fileID: 21300000, guid: 9e57146235f4123459b034e752a91bc0, type: 3}
+  bubbleText: feafd
   bubbleTiers: 0
   bubblePrice: 0

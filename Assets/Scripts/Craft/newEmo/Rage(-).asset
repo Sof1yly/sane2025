@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Rage(-)
   m_EditorClassIdentifier: 
   bubbleName: Rage(-)
-  bubbleImage: {fileID: 0}
+  bubbleImage: {fileID: 21300000, guid: 728450d4aedc6b94c9b179c1826ded78, type: 3}
   bubbleText: 
   bubbleTiers: 0
   bubblePrice: 0

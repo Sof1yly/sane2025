@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Ecstasy(+)
   m_EditorClassIdentifier: 
   bubbleName: Ecstasy(+)
-  bubbleImage: {fileID: 21300000, guid: 3a329901bc69b224abf404aa4bac271a, type: 3}
-  bubbleText: yeah
+  bubbleImage: {fileID: 21300000, guid: 4abf52ab27436584c836359a0481cfd4, type: 3}
+  bubbleText: ecstasy
   bubbleTiers: 0
   bubblePrice: 0
