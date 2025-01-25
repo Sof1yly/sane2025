@@ -179,6 +179,6 @@ public class DialogUI : MonoBehaviour
     /// </summary>
     public void testDialog()
     {
-        StartDialog("correctAns", new int[] { 1 });
+        StartDialog("Pride", new int[] { 1 });
     }
 }
