@@ -15,6 +15,9 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
         canvas = GetComponentInParent<Canvas>();
+
+        // Set initial transparency
+        canvasGroup.alpha = 0f; 
     }
 
     private void Start()
@@ -28,7 +31,7 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        canvasGroup.alpha = 0.6f; // Make the object semi-transparent
+        canvasGroup.alpha = 0.85f; // Make the object semi-transparent
         canvasGroup.blocksRaycasts = false; // Allow drop zones to detect the drag
     }
 
@@ -39,7 +42,7 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        canvasGroup.alpha = 1f; // Restore full visibility
+        canvasGroup.alpha = 0f; // Restore full visibility
         canvasGroup.blocksRaycasts = true; // Block raycasts again
 
         // If not dropped on a valid target, return to the original position
