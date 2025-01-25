@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,13 +6,22 @@ using UnityEngine.UI;
 
 public class DialogUI : MonoBehaviour
 {
+    [Header("UI References")]
     public TMP_Text dialogText;
     public DialogManager dialogManager;
     public DialogHistoryManager dialogHistoryManager;
+
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip scaleUpClip;
+    public AudioClip scaleDownClip;
+    public AudioClip typingClip;
+
     private int currentLineIndex = 0;
     private Dialog currentDialog;
 
     private RandomNumberGenerator rng = new RandomNumberGenerator();
+    private Coroutine typingCoroutine;
 
     private void Awake()
     {
@@ -30,7 +39,8 @@ public class DialogUI : MonoBehaviour
         if (currentDialog != null)
         {
             currentLineIndex = 0;
-            StartCoroutine(ScaleUI(Vector3.one, () => ShowNextLine())); // Expand to scale 1 and show the first line
+            // ขยาย UI เป็น 1 พร้อมกับเรียก ShowNextLine
+            StartCoroutine(ScaleUI(Vector3.one, () => ShowNextLine()));
         }
         else
         {
@@ -42,13 +52,21 @@ public class DialogUI : MonoBehaviour
     {
         if (currentDialog != null && currentLineIndex < currentDialog.dialogLines.Length)
         {
+            if (typingCoroutine != null)
+            {
+                StopCoroutine(typingCoroutine); // หยุดเอฟเฟ็กต์พิมพ์ก่อนหน้าถ้ามี
+            }
+
+            // ย่อ UI กลับลงมาเป็น 0 ก่อน จากนั้นค่อยเริ่ม typing
             StartCoroutine(ScaleUI(Vector3.zero, () =>
             {
                 string currentLine = currentDialog.dialogLines[currentLineIndex];
-                dialogText.text = currentLine;
+                typingCoroutine = StartCoroutine(TypeText(currentLine)); // เริ่มเอฟเฟ็กต์พิมพ์
                 dialogHistoryManager.AddToHistory(currentLine);
                 currentLineIndex++;
-                StartCoroutine(ScaleUI(Vector3.one, null)); // Expand back to scale 1
+
+                // ขยายกลับเป็น 1 อีกครั้งหลังจากเริ่มพิมพ์
+                StartCoroutine(ScaleUI(Vector3.one, null));
             }));
         }
         else
@@ -59,6 +77,12 @@ public class DialogUI : MonoBehaviour
 
     public void EndDialog()
     {
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+        }
+
+        // ย่อ UI ลงมาแล้วปิด
         StartCoroutine(ScaleUI(Vector3.zero, () =>
         {
             gameObject.SetActive(false);
@@ -72,6 +96,21 @@ public class DialogUI : MonoBehaviour
         float duration = 0.3f;
         float elapsed = 0f;
 
+        // เล่นเสียงก่อนทำ Lerp
+        if (audioSource != null)
+        {
+            // ถ้าต้องการขยาย (Scale ขึ้น)
+            if (targetScale == Vector3.one && scaleUpClip != null)
+            {
+                audioSource.PlayOneShot(scaleUpClip);
+            }
+            // ถ้าต้องการย่อ (Scale ลง)
+            else if (targetScale == Vector3.zero && scaleDownClip != null)
+            {
+                audioSource.PlayOneShot(scaleDownClip);
+            }
+        }
+
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
@@ -83,6 +122,26 @@ public class DialogUI : MonoBehaviour
         onComplete?.Invoke();
     }
 
+    private IEnumerator TypeText(string text)
+    {
+        dialogText.text = "";
+        foreach (char letter in text.ToCharArray())
+        {
+            // เพิ่มตัวอักษรทีละตัว
+            dialogText.text += letter;
+
+            // เล่นเสียงตอนพิมพ์ตัวอักษร (ถ้ามี AudioClip, AudioSource)
+            if (audioSource != null && typingClip != null)
+            {
+                audioSource.PlayOneShot(typingClip);
+            }
+
+            // ปรับความเร็วตามต้องการ
+            yield return new WaitForSeconds(0.05f);
+        }
+    }
+
+    // ทดสอบการเริ่ม Dialog ได้
     public void testDialog()
     {
         StartDialog("correctAns", new int[] { 1 });
