@@ -4,12 +4,30 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
+public class DialogSpriteMapping
+{
+    public string dialogName; // ชื่อตัวละครหรือ dialogName
+    public Sprite sprite;     // ภาพที่ต้องการแสดง
+}
+
 public class DialogUI : MonoBehaviour
 {
     [Header("UI References")]
     public TMP_Text dialogText;
     public DialogManager dialogManager;
     public DialogHistoryManager dialogHistoryManager;
+
+    [Header("UI Image to Change Sprite")]
+    public Image dialogImage;  // <--- อ้างอิง Image ใน Canvas ที่จะแสดง Sprite
+
+    [Header("Sprite Mappings")]
+    public List<DialogSpriteMapping> dialogSprites;
+    // ใส่ dialogName และ sprite ที่ตรงกันใน Inspector
+
+    [Header("Default Sprite (If Not Found)")]
+    public Sprite defaultSprite;
+    // Sprite ที่จะใช้ถ้าไม่เจอ dialogName ตรงใน list
 
     [Header("Audio")]
     public AudioSource audioSource;
@@ -25,12 +43,16 @@ public class DialogUI : MonoBehaviour
 
     private void Awake()
     {
-        // Set initial scale to 0
+        // ตั้งค่า scale เริ่มต้นให้เป็น 0
         transform.localScale = Vector3.zero;
     }
 
     public void StartDialog(string dialogName, int[] dialogID)
     {
+        // 1) กำหนด Sprite ตาม dialogName
+        dialogImage.sprite = GetSpriteByDialogName(dialogName);
+
+        // 2) ตั้งค่าการทำงานของ Dialog
         gameObject.SetActive(true);
         dialogHistoryManager.ClearHistory();
         int randomValue = rng.GetRandomNumber(dialogID);
@@ -39,7 +61,6 @@ public class DialogUI : MonoBehaviour
         if (currentDialog != null)
         {
             currentLineIndex = 0;
-            // ขยาย UI เป็น 1 พร้อมกับเรียก ShowNextLine
             StartCoroutine(ScaleUI(Vector3.one, () => ShowNextLine()));
         }
         else
@@ -54,18 +75,15 @@ public class DialogUI : MonoBehaviour
         {
             if (typingCoroutine != null)
             {
-                StopCoroutine(typingCoroutine); // หยุดเอฟเฟ็กต์พิมพ์ก่อนหน้าถ้ามี
+                StopCoroutine(typingCoroutine);
             }
 
-            // ย่อ UI กลับลงมาเป็น 0 ก่อน จากนั้นค่อยเริ่ม typing
             StartCoroutine(ScaleUI(Vector3.zero, () =>
             {
                 string currentLine = currentDialog.dialogLines[currentLineIndex];
-                typingCoroutine = StartCoroutine(TypeText(currentLine)); // เริ่มเอฟเฟ็กต์พิมพ์
+                typingCoroutine = StartCoroutine(TypeText(currentLine));
                 dialogHistoryManager.AddToHistory(currentLine);
                 currentLineIndex++;
-
-                // ขยายกลับเป็น 1 อีกครั้งหลังจากเริ่มพิมพ์
                 StartCoroutine(ScaleUI(Vector3.one, null));
             }));
         }
@@ -82,7 +100,6 @@ public class DialogUI : MonoBehaviour
             StopCoroutine(typingCoroutine);
         }
 
-        // ย่อ UI ลงมาแล้วปิด
         StartCoroutine(ScaleUI(Vector3.zero, () =>
         {
             gameObject.SetActive(false);
@@ -90,21 +107,22 @@ public class DialogUI : MonoBehaviour
         }));
     }
 
+    /// <summary>
+    /// ฟังก์ชัน Lerp ขยาย-ย่อ UI พร้อม CallBack 
+    /// </summary>
     private IEnumerator ScaleUI(Vector3 targetScale, System.Action onComplete)
     {
         Vector3 originalScale = transform.localScale;
         float duration = 0.3f;
         float elapsed = 0f;
 
-        // เล่นเสียงก่อนทำ Lerp
+        // เล่นเสียงตามสถานะขยาย/ย่อ
         if (audioSource != null)
         {
-            // ถ้าต้องการขยาย (Scale ขึ้น)
             if (targetScale == Vector3.one && scaleUpClip != null)
             {
                 audioSource.PlayOneShot(scaleUpClip);
             }
-            // ถ้าต้องการย่อ (Scale ลง)
             else if (targetScale == Vector3.zero && scaleDownClip != null)
             {
                 audioSource.PlayOneShot(scaleDownClip);
@@ -122,26 +140,43 @@ public class DialogUI : MonoBehaviour
         onComplete?.Invoke();
     }
 
+    /// <summary>
+    /// เอฟเฟกต์พิมพ์ Text ทีละตัวอักษร
+    /// </summary>
     private IEnumerator TypeText(string text)
     {
         dialogText.text = "";
         foreach (char letter in text.ToCharArray())
         {
-            // เพิ่มตัวอักษรทีละตัว
             dialogText.text += letter;
 
-            // เล่นเสียงตอนพิมพ์ตัวอักษร (ถ้ามี AudioClip, AudioSource)
             if (audioSource != null && typingClip != null)
             {
                 audioSource.PlayOneShot(typingClip);
             }
 
-            // ปรับความเร็วตามต้องการ
             yield return new WaitForSeconds(0.05f);
         }
     }
 
-    // ทดสอบการเริ่ม Dialog ได้
+    /// <summary>
+    /// ถ้าไม่เจอ dialogName ใน list ให้คืน defaultSprite แทน
+    /// </summary>
+    private Sprite GetSpriteByDialogName(string nameToFind)
+    {
+        foreach (DialogSpriteMapping mapping in dialogSprites)
+        {
+            if (mapping.dialogName == nameToFind)
+            {
+                return mapping.sprite;
+            }
+        }
+        return defaultSprite; // ไม่มีใน List → ใช้ defaultSprite
+    }
+
+    /// <summary>
+    /// ฟังก์ชันทดสอบ
+    /// </summary>
     public void testDialog()
     {
         StartDialog("correctAns", new int[] { 1 });

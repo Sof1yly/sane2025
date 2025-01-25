@@ -1,9 +1,11 @@
 using UnityEngine;
 
-[System.Serializable]
+[CreateAssetMenu(menuName = "MyGame/NPCData")]
 public class NPCData : ScriptableObject
 {
-    public string npcName;                     // Name of the NPC
-    public Sprite npcSprite;                   // Sprite for the NPC
-    public RuntimeAnimatorController npcAnimation; // Animation controller
+    public string characterName;
+    public Sprite characterSprite;
+    public RuntimeAnimatorController animatorCtrl;
+    public string[] emotion;
+    public int score;
 }
