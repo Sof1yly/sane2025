@@ -13,9 +13,10 @@ public class BubbleCombiner : MonoBehaviour
     [Header("All possible bubble recipes")]
     public BubbleRecipe[] bubbleRecipes;
 
-    [Header("Images (or GameObjects) to Hide After Confirmation (optional)")]
+    [Header("Images to Hide after confirm")]
     public GameObject imageToHide1;
     public GameObject imageToHide2;
+    public GameObject imageConfirm;
 
     // Called by the "Confirm" button
     public void ConfirmCraft()
@@ -61,6 +62,7 @@ public class BubbleCombiner : MonoBehaviour
                 // [Optional] Hide the specified images/objects
                 if (imageToHide1 != null) imageToHide1.SetActive(false);
                 if (imageToHide2 != null) imageToHide2.SetActive(false);
+                if(imageConfirm != null) imageConfirm.SetActive(false);
 
                 foundMatch = true;
                 break;  // Stop searching once we find the first valid recipe
