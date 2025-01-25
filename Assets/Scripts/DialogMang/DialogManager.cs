@@ -1,32 +1,42 @@
 using UnityEngine;
+using System.IO;
 
 public class DialogManager : MonoBehaviour
 {
-    public DialogData dialogData; // Reference to the DialogData ScriptableObject
+    public DialogCollection dialogCollection;
 
-    private int currentDialogIndex = 0;
 
-    private void Start()
+    void Awake()
     {
-        DisplayDialog();
+        LoadDialogData();
     }
 
-    public void DisplayDialog()
+    void LoadDialogData()
     {
-        if (currentDialogIndex < dialogData.dialogEntries.Length)
+        string filePath = Path.Combine(Application.streamingAssetsPath, "dialog.json");
+
+        if (File.Exists(filePath))
         {
-            var dialogEntry = dialogData.dialogEntries[currentDialogIndex];
+            string jsonContent = File.ReadAllText(filePath);
+            dialogCollection = JsonUtility.FromJson<DialogCollection>(jsonContent);
 
-            Debug.Log($"NPC: {dialogEntry.npc.npcName}");
-            Debug.Log($"Dialog: {dialogEntry.dialogText}");
-            Debug.Log($"Bubble: {dialogEntry.bubble.bubbleName}");
-
-            // Proceed to the next dialog line (Example for stepping through dialogs)
-            currentDialogIndex++;
+            Debug.Log("Dialogs Loaded Successfully!");
         }
         else
         {
-            Debug.Log("End of dialog.");
+            Debug.LogError("Dialog file not found: " + filePath);
         }
+    }
+
+    public Dialog GetDialogByCharacter(string dialogName, int dialogID)
+    {
+        foreach (var dialog in dialogCollection.dialogs)
+        {
+            if (dialog.dialogName == dialogName && dialog.dialogID == dialogID)
+            {
+                return dialog;
+            }
+        }
+        return null;
     }
 }

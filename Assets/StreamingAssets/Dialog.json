@@ -1,0 +1,49 @@
+{
+    "dialogs": [
+        {
+            "dialogName": "Anger",
+            "dialogID": 1,
+            "dialogLines": [
+                "Hello there!",
+                "How are you doing today?",
+                "It's a beautiful day, isn't it?"
+            ]
+        },
+        {
+            "dialogName": "Anger",
+            "dialogID": 2,
+            "dialogLines": [
+                "Hello there!2",
+                "How are you doing today?2",
+                "It's a beautiful day, isn't it?2"
+            ]
+        },
+        {
+            "dialogName": "Joy1",
+            "dialogID": 1,
+            "dialogLines": [
+                "Hi! Nice to meet you.",
+                "Be careful out there!",
+                "Good luck on your journey!"
+            ]
+        },
+        {
+            "dialogName": "correctAns",
+            "dialogID": 1,
+            "dialogLines": [
+                "Hello there!",
+                "How are you doing today?",
+                "It's a beautiful day, isn't it?"
+            ]
+        },
+        {
+            "dialogName": "WrongAns",
+            "dialogID": 1,
+            "dialogLines": [
+                "Hello there!",
+                "How are you doing today?",
+                "It's a beautiful day, isn't it?"
+            ]
+        }
+    ]
+}
