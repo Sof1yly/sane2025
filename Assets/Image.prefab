@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0abe44d6ce6499347835950343d140bb, type: 2}
+  m_sharedMaterial: {fileID: -9012848601612802594, guid: 0abe44d6ce6499347835950343d140bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -362,6 +362,13 @@ MonoBehaviour:
   dialogText: {fileID: 3610968428185460695}
   dialogManager: {fileID: 0}
   dialogHistoryManager: {fileID: 0}
+  dialogImage: {fileID: 0}
+  dialogSprites: []
+  defaultSprite: {fileID: 0}
+  audioSource: {fileID: 0}
+  scaleUpClip: {fileID: 0}
+  scaleDownClip: {fileID: 0}
+  typingClip: {fileID: 0}
 --- !u!82 &6993724392315213403
 AudioSource:
   m_ObjectHideFlags: 0

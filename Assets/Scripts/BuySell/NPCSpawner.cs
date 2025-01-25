@@ -1,48 +1,76 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
+using System;
 
 public class NPCSpawner : MonoBehaviour
 {
     [Header("NPC Prefab")]
     public GameObject npcPrefab;  // Prefab ที่มีคอมโพเนนต์ NPC อยู่
 
-    // ฟังก์ชันสำหรับสร้าง NPC ใหม่ในตำแหน่งที่กำหนด
-    public void CreateNPC(NPCData data, Vector3 spawnPosition)
+    [Header("NPC Data")]
+    public NPCData npcData;       // Data ต้นแบบ
+
+    [Header("DialogUI Reference")]
+    public DialogUI dialogUI;     // อ้างอิงถึง DialogUI ในซีน
+
+    [Header("Settings")]
+    public int spawnCount = 4;    // ต้องการ Spawn กี่ตัว
+    public Vector3 spawnPosition; // ตำแหน่งที่จะ Spawn
+
+    // เริ่มขั้นตอน Spawn NPC แบบ Coroutine
+    private void Start()
     {
-        if (npcPrefab == null)
-        {
-            Debug.LogError("NPC Prefab is not assigned!");
-            return;
-        }
-
-        // สร้าง GameObject ใหม่จาก Prefab
-        GameObject newNPCObject = Instantiate(npcPrefab, spawnPosition, Quaternion.identity);
-
-        // เข้าถึงคอมโพเนนต์ NPC
-        NPC npcComponent = newNPCObject.GetComponent<NPC>();
-        if (npcComponent != null)
-        {
-            // เรียก Init เพื่อเซ็ต Data และอัปเดต sprite/animator 
-            npcComponent.Init(data);
-        }
-        else
-        {
-            Debug.LogWarning("The spawned prefab does not have an NPC component!");
-        }
+        StartCoroutine(SpawnNPCSequence());
     }
 
-    // ตัวอย่างการทดสอบเรียกสร้าง
-    [ContextMenu("Test Spawn NPC")]
-    public void TestSpawn()
+    private IEnumerator SpawnNPCSequence()
     {
-        // สมมติเรามี Data ใน Assets เช่น "TestNPCData"
-        NPCData testData = Resources.Load<NPCData>("TestNPCData");
-        if (testData != null)
+        for (int i = 0; i < spawnCount; i++)
         {
-            CreateNPC(testData, new Vector3(0, 0, 0));
+            // 1) สุ่ม emotion จาก npcData.emotion แล้วเซ็ตเป็น currentemotion
+            if (npcData.emotion != null && npcData.emotion.Length > 0)
+            {
+                int randIndex = UnityEngine.Random.Range(0, npcData.emotion.Length);
+                npcData.currentemotion = npcData.emotion[randIndex];
+            }
+            else
+            {
+                npcData.currentemotion = "Neutral"; // ถ้าไม่มี emotion ใน array
+            }
+
+            // 2) สร้าง NPC จาก Prefab
+            GameObject npcObj = Instantiate(npcPrefab, spawnPosition, Quaternion.identity);
+            NPC npcComp = npcObj.GetComponent<NPC>();
+
+            // 3) เซ็ตข้อมูล NPC
+            if (npcComp != null)
+            {
+                npcComp.Init(npcData);
+
+                // 4) เรียก TriggerDialog พร้อม Callback ว่าจบแล้ว
+                bool dialogEnded = false;
+
+                npcComp.TriggerDialog(dialogUI, new int[] { 1 }, () =>
+                {
+                    // Callback เมื่อ EndDialog() เรียกใช้
+                    dialogEnded = true;
+                });
+
+                // 5) รอจนกว่าบทสนทนาจะจบ
+                yield return new WaitUntil(() => dialogEnded);
+
+                // 6) ทำลาย NPC ตัวนี้
+                Destroy(npcObj);
+            }
+            else
+            {
+                Debug.LogWarning("No NPC component found on the spawned prefab!");
+            }
+
+            // (ตัวอย่าง) หน่วงเวลาเล็กน้อยก่อนสร้างตัวถัดไป (ถ้าต้องการ)
+            yield return new WaitForSeconds(0.2f);
         }
-        else
-        {
-            Debug.LogWarning("Can't find TestNPCData in Resources folder!");
-        }
+
+        Debug.Log("NPC spawning loop finished!");
     }
 }
