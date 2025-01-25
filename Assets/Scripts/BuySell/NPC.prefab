@@ -230,7 +230,7 @@ Animator:
   m_GameObject: {fileID: 3321575700849418803}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ca9b87a688e808248922902bc8a16149, type: 2}
+  m_Controller: {fileID: 9100000, guid: 04ce55189c8b7e34aa45992b1ecc56a7, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -256,7 +256,6 @@ MonoBehaviour:
   npcData: {fileID: 11400000, guid: d2ea2d6d57713004c8846682da9a595c, type: 2}
   spriteRenderer: {fileID: 4701108867626852597}
   animator: {fileID: 6218044545879429969}
-  craftUI: {fileID: 6614835927673600431, guid: 4487b9eec2956ba4f90b3360db0befa7, type: 3}
 --- !u!1 &3735322724682597895
 GameObject:
   m_ObjectHideFlags: 0

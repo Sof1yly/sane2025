@@ -19,8 +19,12 @@ public class BubbleCombiner : MonoBehaviour
     public GameObject imageConfirm;
     public GameObject allUIcom;
 
+
     private void Start()
     {
+        if (imageToHide1 != null) imageToHide1.SetActive(true);
+        if (imageToHide2 != null) imageToHide2.SetActive(true);
+        if (imageConfirm != null) imageConfirm.SetActive(true);
         // If any of these references are missing, try to find them by name in children:
         if (slotA == null)
         {
@@ -107,9 +111,9 @@ public class BubbleCombiner : MonoBehaviour
                 slotB.ClearSlot();
 
                 // [Optional] Hide the specified images/objects
-                //if (imageToHide1 != null) imageToHide1.SetActive(false);
-                //if (imageToHide2 != null) imageToHide2.SetActive(false);
-                //if (imageConfirm != null) imageConfirm.SetActive(false);
+                if (imageToHide1 != null) imageToHide1.SetActive(false);
+                if (imageToHide2 != null) imageToHide2.SetActive(false);
+                if (imageConfirm != null) imageConfirm.SetActive(false);
                 if (allUIcom != null) allUIcom.SetActive(false);
 
                 foundMatch = true;

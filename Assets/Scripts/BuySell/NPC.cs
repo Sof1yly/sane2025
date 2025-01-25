@@ -1,11 +1,14 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using UnityEngine;
 
 public class NPC : MonoBehaviour
 {
+    public Action OnNPCDestroyed;
+
     [Header("Assigned NPC Data")]
     [SerializeField] private NPCData npcData;
-    
-    [Header("References")]
+
     public SpriteRenderer spriteRenderer;
     public Animator animator;
 
@@ -13,19 +16,20 @@ public class NPC : MonoBehaviour
     private DialogUI attachedDialogUI;
     private GameObject craftUI;
 
-    /// <summary>
-    /// เรียกใช้หลัง Instantiate เพื่อเซ็ต Data และ DialogUI ให้ NPC
-    /// </summary>
+    private BubbleCombiner bubbleCombiner;
+    private CrafingUIMangaer gamemanager;
+    private bool hasChecked = false;
+
     public void Init(NPCData data, DialogUI dialogUI, GameObject craftUIObject)
     {
-        // เก็บไว้ในตัวแปรภายใน
         npcData = data;
         attachedDialogUI = dialogUI;
         craftUI = craftUIObject;
-        // 1) สุ่ม emotion
+
+        // สุ่ม emotion
         if (npcData.emotion != null && npcData.emotion.Length > 0)
         {
-            int randIndex = Random.Range(0, npcData.emotion.Length);
+            int randIndex = UnityEngine.Random.Range(0, npcData.emotion.Length);
             currentemotion = npcData.emotion[randIndex];
         }
         else
@@ -33,10 +37,10 @@ public class NPC : MonoBehaviour
             currentemotion = "Neutral";
         }
 
-        // 2) ตั้งชื่อ GameObject เช่น NPC_Poring_Happy
+        // ตั้งชื่อ
         gameObject.name = "NPC_" + npcData.characterName + "_" + currentemotion;
 
-        // 3) ตั้งค่า Sprite/Animator
+        // ตั้ง Sprite/Animator
         if (spriteRenderer != null && npcData.characterSprite != null)
         {
             spriteRenderer.sprite = npcData.characterSprite;
@@ -44,25 +48,114 @@ public class NPC : MonoBehaviour
         if (animator != null && npcData.animatorCtrl != null)
         {
             animator.runtimeAnimatorController = npcData.animatorCtrl;
-            // animator.SetTrigger(currentemotion);
         }
 
-        // 4) เรียก StartDialog() โดยใช้ currentemotion เป็น dialogName
+        // ** ตรงนี้คือจุดเริ่ม Dialog **
         if (attachedDialogUI != null)
         {
-            attachedDialogUI.StartDialog(currentemotion, new int[] {1, 2}, () =>
+            // 1) เปิด IsTalking ให้เป็น true ก่อนเริ่ม Dialog
+            if (animator != null)
             {
+                animator.SetBool("IsTalking", true);
+            }
+
+            // 2) เรียก StartDialog แล้วส่ง Callback ตอนจบ
+            attachedDialogUI.StartDialog(currentemotion, new int[] { 1, 2 }, () =>
+            {
+                // *** พอจบบทสนทนา → Set IsTalking = false ***
+                if (animator != null)
+                {
+                    animator.SetBool("IsTalking", false);
+                }
+
+                // ... คำสั่งอื่น ๆ หลังจบ Dialog ...
                 craftUI.gameObject.SetActive(true);
+
+                if (bubbleCombiner != null)
+                {
+                    bubbleCombiner.imageToHide1.SetActive(true);
+                    bubbleCombiner.imageToHide2.SetActive(true);
+                    bubbleCombiner.imageConfirm.SetActive(true);
+                }
             });
         }
 
-        // (ถ้าอยาก Debug ดู)
         Debug.Log($"NPC [{gameObject.name}] spawned and called StartDialog({currentemotion})");
     }
 
-    // เผื่อภายนอกอยากเช็ค emotion ปัจจุบัน
-    public string GetCurrentEmotion()
+    private void Start()
     {
-        return currentemotion;
+        bubbleCombiner = FindObjectOfType<BubbleCombiner>();
+        gamemanager = FindObjectOfType<CrafingUIMangaer>();
+        if (bubbleCombiner == null)
+        {
+            Debug.LogWarning("NPC cannot find BubbleCombiner in the scene!");
+        }
+    }
+
+    private void Update()
+    {
+        if (hasChecked) return;
+
+        if (bubbleCombiner != null &&
+            bubbleCombiner.resultSlot != null &&
+            bubbleCombiner.resultSlot.currentBubble != null)
+        {
+            string resultName = bubbleCombiner.resultSlot.currentBubble.bubbleName;
+            if (resultName == currentemotion)
+            {
+                gamemanager.AddScore(30);
+                Debug.Log($"[NPC {name}] MATCH: {resultName} == {currentemotion}");
+
+                attachedDialogUI.StartDialog("correctAns", new int[] { 1, 2, 3, 4, 5 }, () =>
+                {
+                    // จบบทสนทนา → ปิด IsTalking อีกครั้ง
+                    if (animator != null)
+                    {
+                        animator.SetBool("IsTalking", false);
+                    }
+                    DestroySelf();
+                });
+            }
+            else
+            {
+                gamemanager.AddWrong(1);
+                Debug.Log($"Not match. (result = {resultName}, emotion = {currentemotion})");
+
+                attachedDialogUI.StartDialog("WrongAns", new int[] { 1, 2, 3, 4, 5 }, () =>
+                {
+                    // จบบทสนทนา → ปิด IsTalking
+                    if (animator != null)
+                    {
+                        animator.SetBool("IsTalking", false);
+                    }
+                    DestroySelf();
+                });
+            }
+
+            hasChecked = true;
+            StartCoroutine(EndSequence(2f));
+        }
+    }
+
+    private IEnumerator EndSequence(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (bubbleCombiner != null && bubbleCombiner.resultSlot != null)
+        {
+            bubbleCombiner.resultSlot.ClearSlot();
+        }
+
+        if (craftUI != null)
+        {
+            craftUI.SetActive(false);
+        }
+    }
+
+    private void DestroySelf()
+    {
+        OnNPCDestroyed?.Invoke();
+        Destroy(gameObject);
     }
 }
