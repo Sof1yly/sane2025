@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Joy
   m_EditorClassIdentifier: 
   bubbleName: Joy
-  bubbleImage: {fileID: 21300000, guid: 97659a6c814907d409bc62a659bc15bb, type: 3}
-  bubbleText: kuy
+  bubbleImage: {fileID: 21300000, guid: ddd00605d6dccb547a87d5490a4fed75, type: 3}
+  bubbleText: ya
   bubbleTiers: 0
   bubblePrice: 0

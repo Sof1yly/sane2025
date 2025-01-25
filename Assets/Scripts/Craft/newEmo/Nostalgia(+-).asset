@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Nostalgia(+-)
   m_EditorClassIdentifier: 
   bubbleName: Nostalgia
-  bubbleImage: {fileID: 21300000, guid: bdd1eeeab9c4075428ba8b49a3304d43, type: 3}
+  bubbleImage: {fileID: 21300000, guid: ecf53cf84b281da4fbc1bb6d324899ad, type: 3}
   bubbleText: +-
   bubbleTiers: 0
   bubblePrice: 0
