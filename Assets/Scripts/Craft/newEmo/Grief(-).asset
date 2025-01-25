@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dab083f818bb4c44587e75b0cf15b890, type: 3}
-  m_Name: Joy
+  m_Name: Grief(-)
   m_EditorClassIdentifier: 
-  bubbleName: Joy
-  bubbleImage: {fileID: 21300000, guid: c9ce89ce87c504b468ec6bff05ec5358, type: 3}
-  bubbleText: kuy
+  bubbleName: Grief(-)
+  bubbleImage: {fileID: 0}
+  bubbleText: 
   bubbleTiers: 0
   bubblePrice: 0

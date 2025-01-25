@@ -18,6 +18,22 @@ public class DayManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        // Example inputs to demonstrate functionality
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            day.UpdateDay(100, 2, Day.Upgrade.Hints); // Example update with Hints upgrade
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            day.Save(); // Save the current state
+        }
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            day.Load(); // Load the saved state
+        }
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            day.NextDay(); // Go to the next day
+        }
     }
 }

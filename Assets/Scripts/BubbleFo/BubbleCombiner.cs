@@ -1,0 +1,76 @@
+using UnityEngine;
+using System.Collections.Generic;
+
+public class BubbleCombiner : MonoBehaviour
+{
+    [Header("References to our two crafting slots")]
+    public CraftingSlot slotA;
+    public CraftingSlot slotB;
+
+    [Header("Optional - A slot to show the result")]
+    public CraftingSlot resultSlot;
+
+    [Header("All possible bubble recipes")]
+    public BubbleRecipe[] bubbleRecipes;
+
+    [Header("Images (or GameObjects) to Hide After Confirmation (optional)")]
+    public GameObject imageToHide1;
+    public GameObject imageToHide2;
+
+    // Called by the "Confirm" button
+    public void ConfirmCraft()
+    {
+        // 1. Grab the current bubbles in each slot
+        BubbleData bubbleA = slotA.currentBubble;
+        BubbleData bubbleB = slotB.currentBubble;
+
+        // 2. Make sure both slots have something
+        if (bubbleA == null || bubbleB == null)
+        {
+            Debug.LogWarning("Cannot craft: one or both slots are empty!");
+            return;
+        }
+
+        // 3. Try to find a matching recipe among our array of recipes
+        bool foundMatch = false;
+
+        foreach (BubbleRecipe recipe in bubbleRecipes)
+        {
+            // Check if they match the inputs of this recipe (in any order)
+            bool matchNormal = (bubbleA == recipe.input1 && bubbleB == recipe.input2);
+            bool matchReverse = (bubbleA == recipe.input2 && bubbleB == recipe.input1);
+
+            if (matchNormal || matchReverse)
+            {
+                Debug.Log($"Success! Crafting new bubble: {recipe.result.bubbleName}");
+
+                // Place the result in the resultSlot (if assigned)
+                if (resultSlot != null)
+                {
+                    resultSlot.SetBubble(recipe.result);
+                }
+                else
+                {
+                    Debug.LogWarning("No result slot assigned. The new bubble won't be shown in the UI!");
+                }
+
+                // Clear out the inputs
+                slotA.ClearSlot();
+                slotB.ClearSlot();
+
+                // [Optional] Hide the specified images/objects
+                if (imageToHide1 != null) imageToHide1.SetActive(false);
+                if (imageToHide2 != null) imageToHide2.SetActive(false);
+
+                foundMatch = true;
+                break;  // Stop searching once we find the first valid recipe
+            }
+        }
+
+        // If we finish the loop without finding a match, log a message
+        if (!foundMatch)
+        {
+            Debug.Log("No matching recipe found for these two bubbles!");
+        }
+    }
+}

@@ -4,7 +4,7 @@ using UnityEngine;
 public class DialogEntry
 {
     public NPC npc;              // The NPC who speaks the dialog
-    public BubbleData bubble;    // The bubble associated with the dialog
+    //public BubbleCombine bubble;    // The bubble associated with the dialog
     public string dialogText;    // The dialog text
 }
 
