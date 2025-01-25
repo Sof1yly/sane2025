@@ -55,7 +55,7 @@ public class DialogUI : MonoBehaviour
        
         // 1) กำหนด Sprite ตาม dialogName
         dialogImage.sprite = GetSpriteByDialogName(dialogName);
-
+        onDialogEndCallback = onEndDialogCallback;
         // 2) ตั้งค่าการทำงานของ Dialog
         gameObject.SetActive(true);
         dialogHistoryManager.ClearHistory();
@@ -108,6 +108,7 @@ public class DialogUI : MonoBehaviour
         {
             gameObject.SetActive(false);
             dialogText.text = "End of Dialog.";
+            onDialogEndCallback?.Invoke();
         }));
 
        
