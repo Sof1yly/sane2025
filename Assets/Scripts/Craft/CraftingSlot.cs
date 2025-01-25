@@ -12,15 +12,29 @@ public class CraftingSlot : MonoBehaviour, IDropHandler
         if (slotImage == null)
             slotImage = GetComponent<Image>();
 
-        // If you're using this as a Result slot, you might want 
-        // to make it not raycast target or something similar. 
-        // Or simply not implement IDropHandler on the result slot.
+        // Make the slot image semi-transparent or fully transparent at the start
+        // so the player knows it’s empty.
+        Color color = slotImage.color;
+        color.a = 0f;        // Set to 0f if you want it fully invisible
+        slotImage.color = color;
+
+        // Optionally, you can keep slotImage.enabled = true so we only change transparency.
+        // Alternatively, you could keep it disabled until a bubble is placed.
+        slotImage.enabled = true;
     }
 
     public void SetBubble(BubbleData bubble)
     {
         currentBubble = bubble;
+
+        // Assign sprite
         slotImage.sprite = bubble.bubbleImage;
+
+        // Make it fully visible now that it’s occupied
+        Color color = slotImage.color;
+        color.a = 1f;
+        slotImage.color = color;
+
         slotImage.enabled = true;
     }
 
@@ -28,13 +42,19 @@ public class CraftingSlot : MonoBehaviour, IDropHandler
     {
         currentBubble = null;
         slotImage.sprite = null;
-        slotImage.enabled = false;
+
+        // Make the slot semi-transparent again
+        Color color = slotImage.color;
+        color.a = 0f;
+        slotImage.color = color;
+
+        // Or, if you’d rather hide it entirely, you could do:
+        // slotImage.enabled = false;
     }
 
-    // This method allows us to drop a DraggableBubble onto this slot
+    // OnDrop: When a DraggableBubble is dropped onto this slot
     public void OnDrop(PointerEventData eventData)
     {
-        // Get the dragged object
         GameObject draggedObject = eventData.pointerDrag;
         if (draggedObject != null)
         {
@@ -52,5 +72,4 @@ public class CraftingSlot : MonoBehaviour, IDropHandler
             }
         }
     }
-
 }
