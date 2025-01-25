@@ -1,23 +1,27 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    public RectTransform rectTransform;
+    [Header("Bubble Data")]
+    public BubbleData bubbleData;            // The BubbleData associated with this bubble
+    public Transform originalParent;         // The original slot/bubble slot this bubble belongs to
+
+    [Header("Audio (Optional)")]
+    public AudioSource audioSource;          // If null, no sound will play
+    public AudioClip beginDragSound;
+    public AudioClip endDragSound;
+
+    private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
     private Canvas canvas;
-
-    public BubbleData bubbleData;      // The BubbleData associated with this bubble
-    public Transform originalParent;  // The original slot the bubble belongs to
 
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
         canvas = GetComponentInParent<Canvas>();
-
-        // Set initial transparency
-        canvasGroup.alpha = 0f; 
     }
 
     private void Start()
@@ -25,33 +29,53 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         // Save the original parent when the object starts
         originalParent = transform.parent;
 
-        // Optionally set the bubble's image dynamically from its BubbleData
-        GetComponent<UnityEngine.UI.Image>().sprite = bubbleData.bubbleImage;
+        // Optionally set the bubble's image if you have an Image component on the same GameObject
+        Image img = GetComponent<Image>();
+        if (img != null && bubbleData != null)
+        {
+            img.sprite = bubbleData.bubbleImage;
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        canvasGroup.alpha = 0.85f; // Make the object semi-transparent
-        canvasGroup.blocksRaycasts = false; // Allow drop zones to detect the drag
+        // Play a sound when dragging starts
+        if (audioSource != null && beginDragSound != null)
+            audioSource.PlayOneShot(beginDragSound);
+
+        // Make the bubble semi-transparent during drag
+        canvasGroup.alpha = 0.6f;
+
+        // Let drop zones detect the drag
+        canvasGroup.blocksRaycasts = false;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor; // Move the object
+        // Move the object with the mouse, scaled by the canvas factor
+        rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        canvasGroup.alpha = 0f; // Restore full visibility
-        canvasGroup.blocksRaycasts = true; // Block raycasts again
+        // Play a sound when dragging ends
+        if (audioSource != null && endDragSound != null)
+            audioSource.PlayOneShot(endDragSound);
 
-        // If not dropped on a valid target, return to the original position
+        // Restore full visibility
+        canvasGroup.alpha = 1f;
+
+        // Block raycasts again
+        canvasGroup.blocksRaycasts = true;
+
+        // If not dropped on a valid target, return to original position
         ResetToOriginalPosition();
     }
 
     public void ResetToOriginalPosition()
     {
-        rectTransform.anchoredPosition = Vector2.zero;
+        // Move the bubble back to its original parent/slot
         transform.SetParent(originalParent);
+        rectTransform.anchoredPosition = Vector2.zero;
     }
 }
