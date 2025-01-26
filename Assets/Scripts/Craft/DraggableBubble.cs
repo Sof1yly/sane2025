@@ -13,7 +13,7 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public AudioClip beginDragSound;
     public AudioClip endDragSound;
 
-    private RectTransform rectTransform;
+    public RectTransform rectTransform;
     private CanvasGroup canvasGroup;
     private Canvas canvas;
     private Image bubbleImage;
@@ -21,6 +21,9 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     // Variables to track dragging
     private Vector2 pointerOffset;           // Offset between cursor and bubble's anchored position
     private Transform temporaryParent;       // Temporary parent during dragging
+
+    // Flag to determine if the bubble was successfully dropped into a slot
+    private bool isDroppedValidly = false;
 
     private void Awake()
     {
@@ -65,11 +68,13 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        isDroppedValidly = false; // Reset the flag at the start of dragging
+
         // Play a sound when dragging starts
         if (audioSource != null && beginDragSound != null)
             audioSource.PlayOneShot(beginDragSound);
 
-        // Capture the offset between the cursor and the bubble's position
+        // Capture the offset between the cursor and the bubble's anchored position
         Vector2 localPointerPosition;
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
             rectTransform,
@@ -120,8 +125,8 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         if (audioSource != null && endDragSound != null)
             audioSource.PlayOneShot(endDragSound);
 
-        // Restore full opacity only if not in originalParent
-        if (transform.parent != originalParent && canvasGroup != null)
+        // Restore full opacity if placed in a slot, else make it transparent
+        if (isDroppedValidly && canvasGroup != null)
         {
             canvasGroup.alpha = 1f; // Fully opaque
         }
@@ -139,20 +144,31 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             canvasGroup.blocksRaycasts = true; // Block raycasts again
         }
 
+        // Debug: Log the current parent
+        Debug.Log($"OnEndDrag: Current Parent = {transform.parent.name}");
+
         // If not dropped on a valid target, return to original position
-        // This logic assumes that valid drop targets will re-parent the bubble
-        // Otherwise, it will return to the original parent
-        if (transform.parent == originalParent)
+        if (!isDroppedValidly)
         {
+            Debug.Log("Bubble not dropped on a valid slot. Resetting to original position.");
             ResetToOriginalPosition();
         }
         else
         {
-            // Optionally, set the bubble's visibility based on its new parent
-            // For example, if placed in a slot, make it fully visible
-            // If placed elsewhere, handle accordingly
-            // This can be managed by the CraftingSlot script via SetVisibility
+            Debug.Log("Bubble dropped on a valid slot.");
+            // Ensure visibility is set correctly
+            SetVisibility(true);
         }
+    }
+
+    /// <summary>
+    /// Called by CraftingSlot when the bubble is successfully placed into a slot.
+    /// </summary>
+    /// <param name="newParent">The new parent Transform (the slot).</param>
+    public void SetDroppedValidly(Transform newParent)
+    {
+        isDroppedValidly = true;
+        originalParent = newParent; // Update the original parent to the new slot
     }
 
     public void ResetToOriginalPosition()
