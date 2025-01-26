@@ -16,15 +16,14 @@ public class BubbleCombiner : MonoBehaviour
     [Header("Images to Hide after confirm (auto-found in Start if null)")]
     public GameObject imageToHide1;
     public GameObject imageToHide2;
-    public GameObject imageConfirm;
-    public GameObject allUIcom;
+    //public GameObject imageConfirm;
+    //public GameObject allUIcom;
 
 
     private void Start()
     {
         if (imageToHide1 != null) imageToHide1.SetActive(true);
         if (imageToHide2 != null) imageToHide2.SetActive(true);
-        if (imageConfirm != null) imageConfirm.SetActive(true);
         // If any of these references are missing, try to find them by name in children:
         if (slotA == null)
         {
@@ -60,13 +59,9 @@ public class BubbleCombiner : MonoBehaviour
             if (child != null)
                 imageToHide2 = child.gameObject;
         }
+      
 
-        if (imageConfirm == null)
-        {
-            Transform child = transform.Find("conFirm");
-            if (child != null)
-                imageConfirm = child.gameObject;
-        }
+
     }
 
     // Called by the "Confirm" button
@@ -113,9 +108,8 @@ public class BubbleCombiner : MonoBehaviour
                 // [Optional] Hide the specified images/objects
                 if (imageToHide1 != null) imageToHide1.SetActive(false);
                 if (imageToHide2 != null) imageToHide2.SetActive(false);
-                if (imageConfirm != null) imageConfirm.SetActive(false);
+               
 
-                if (allUIcom != null) allUIcom.SetActive(false);
 
 
 

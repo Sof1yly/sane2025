@@ -25,12 +25,17 @@ public class NPCSpawner : MonoBehaviour
     public AudioClip npcDestroyedClip; // เสียงเมื่อ NPC ถูกทำลาย
     public AudioClip spawnNewNPCClip; // เสียงเมื่อสร้าง NPC ใหม่
 
+    public AudioSource audioSourceNPC;
+    public AudioClip correctAnswerClip;       // เสียงเมื่อคำตอบถูกต้อง
+    public AudioClip wrongAnswerClip;
+
     [Header("Delay Settings")]
     public float delayBeforeSpawn = 1f; // เวลาหน่วงก่อนสร้าง NPC ใหม่ (วินาที)
 
     private void Start()
     {
         // เริ่มสร้าง 1 ตัว (หรือจะเรียกได้เรื่อย ๆ)
+        audioSource.PlayOneShot(spawnNewNPCClip);
         SpawnNewNPC();
     }
 
@@ -53,7 +58,7 @@ public class NPCSpawner : MonoBehaviour
         if (npcComponent != null)
         {
             // ส่ง randomData แทนที่จะเป็น npcData
-            npcComponent.Init(randomData, dialogUI, craftUI);
+            npcComponent.Init(randomData, dialogUI, craftUI, audioSourceNPC, correctAnswerClip, wrongAnswerClip);
 
             // (ถ้าใช้ Callback ให้ Spawn อีกตัวเมื่อ NPC ถูกทำลาย)
             npcComponent.OnNPCDestroyed = () =>

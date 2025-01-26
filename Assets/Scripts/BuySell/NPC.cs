@@ -20,12 +20,19 @@ public class NPC : MonoBehaviour
     private CrafingUIMangaer gamemanager;
     private bool hasChecked = false;
 
-    public void Init(NPCData data, DialogUI dialogUI, GameObject craftUIObject)
+    [Header("Audio Settings")]
+    public AudioSource audioSourceNPC;           // AudioSource สำหรับเล่นเสียงตอบกลับ
+    public AudioClip correctAnswerClip;       // เสียงเมื่อคำตอบถูกต้อง
+    public AudioClip wrongAnswerClip;
+
+    public void Init(NPCData data, DialogUI dialogUI, GameObject craftUIObject, AudioSource audioSource, AudioClip Fxcorrect, AudioClip Fxwrong)
     {
         npcData = data;
         attachedDialogUI = dialogUI;
         craftUI = craftUIObject;
-
+        audioSourceNPC = audioSource;
+        correctAnswerClip = Fxcorrect;
+        wrongAnswerClip = Fxwrong;
         // สุ่ม emotion
         if (npcData.emotion != null && npcData.emotion.Length > 0)
         {
@@ -75,7 +82,7 @@ public class NPC : MonoBehaviour
                 {
                     bubbleCombiner.imageToHide1.SetActive(true);
                     bubbleCombiner.imageToHide2.SetActive(true);
-                    bubbleCombiner.imageConfirm.SetActive(true);
+                    //bubbleCombiner.imageConfirm.SetActive(true);
                 }
             });
         }
@@ -104,8 +111,10 @@ public class NPC : MonoBehaviour
             string resultName = bubbleCombiner.resultSlot.currentBubble.bubbleName;
             if (resultName == currentemotion)
             {
-                gamemanager.AddScore(30);
+                gamemanager.AddScore(10);
                 Debug.Log($"[NPC {name}] MATCH: {resultName} == {currentemotion}");
+
+                PlaySound(correctAnswerClip);
 
                 attachedDialogUI.StartDialog("correctAns", new int[] { 1, 2, 3, 4, 5 }, () =>
                 {
@@ -121,6 +130,7 @@ public class NPC : MonoBehaviour
             {
                 gamemanager.AddWrong(1);
                 Debug.Log($"Not match. (result = {resultName}, emotion = {currentemotion})");
+                PlaySound(wrongAnswerClip);
 
                 attachedDialogUI.StartDialog("WrongAns", new int[] { 1, 2, 3, 4, 5 }, () =>
                 {
@@ -134,7 +144,7 @@ public class NPC : MonoBehaviour
             }
 
             hasChecked = true;
-            StartCoroutine(EndSequence(2f));
+            StartCoroutine(EndSequence(3f));
         }
     }
 
@@ -157,5 +167,18 @@ public class NPC : MonoBehaviour
     {
         OnNPCDestroyed?.Invoke();
         Destroy(gameObject);
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (audioSourceNPC != null && clip != null)
+        {
+            audioSourceNPC.PlayOneShot(clip);
+            Debug.Log($"Playing sound: {clip.name}");
+        }
+        else
+        {
+            Debug.LogWarning("AudioSource หรือ AudioClip ไม่ถูกกำหนด!");
+        }
     }
 }
