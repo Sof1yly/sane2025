@@ -42,28 +42,28 @@ public class BubbleCombiner : MonoBehaviour
 
         if (resultSlot == null)
         {
-            Transform child = transform.Find("ResultSlot");
+            Transform child = transform.Find("outPut");
             if (child != null)
                 resultSlot = child.GetComponent<CraftingSlot>();
         }
 
         if (imageToHide1 == null)
         {
-            Transform child = transform.Find("ImageToHide1");
+            Transform child = transform.Find("im1");
             if (child != null)
                 imageToHide1 = child.gameObject;
         }
 
         if (imageToHide2 == null)
         {
-            Transform child = transform.Find("ImageToHide2");
+            Transform child = transform.Find("im2");
             if (child != null)
                 imageToHide2 = child.gameObject;
         }
 
         if (imageConfirm == null)
         {
-            Transform child = transform.Find("ImageConfirm");
+            Transform child = transform.Find("conFirm");
             if (child != null)
                 imageConfirm = child.gameObject;
         }

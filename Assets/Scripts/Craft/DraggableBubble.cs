@@ -18,6 +18,10 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private Canvas canvas;
     private Image bubbleImage;
 
+    // Variables to track dragging
+    private Vector2 pointerOffset;           // Offset between cursor and bubble's anchored position
+    private Transform temporaryParent;       // Temporary parent during dragging
+
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -65,6 +69,17 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         if (audioSource != null && beginDragSound != null)
             audioSource.PlayOneShot(beginDragSound);
 
+        // Capture the offset between the cursor and the bubble's position
+        Vector2 localPointerPosition;
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            rectTransform,
+            eventData.position,
+            eventData.pressEventCamera,
+            out localPointerPosition))
+        {
+            pointerOffset = rectTransform.anchoredPosition - localPointerPosition;
+        }
+
         // Make the bubble semi-transparent when dragging starts
         if (canvasGroup != null)
         {
@@ -72,8 +87,9 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             canvasGroup.blocksRaycasts = false; // Allow drop zones to receive raycasts
         }
 
-        // Optionally, bring the bubble to the front
-        transform.SetAsLastSibling();
+        // Reparent the bubble to the root canvas to ensure it appears above other UI elements
+        temporaryParent = canvas.transform;
+        transform.SetParent(temporaryParent, true);
 
         // Optionally, scale up the bubble for visual feedback
         rectTransform.localScale = Vector3.one * 1.1f;
@@ -84,15 +100,18 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         if (canvas == null)
             return;
 
-        // Move the object with the mouse, scaled by the canvas factor
-        Vector2 position;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            canvas.transform as RectTransform,
+        // Convert the screen point to a position relative to the canvas
+        Vector2 canvasPosition;
+        RectTransform canvasRect = canvas.transform as RectTransform;
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect,
             eventData.position,
             eventData.pressEventCamera,
-            out position
-        );
-        rectTransform.anchoredPosition = position;
+            out canvasPosition))
+        {
+            // Apply the offset to ensure the bubble follows the cursor accurately
+            rectTransform.anchoredPosition = canvasPosition + pointerOffset;
+        }
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -127,12 +146,19 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         {
             ResetToOriginalPosition();
         }
+        else
+        {
+            // Optionally, set the bubble's visibility based on its new parent
+            // For example, if placed in a slot, make it fully visible
+            // If placed elsewhere, handle accordingly
+            // This can be managed by the CraftingSlot script via SetVisibility
+        }
     }
 
     public void ResetToOriginalPosition()
     {
         // Move the bubble back to its original parent/slot
-        transform.SetParent(originalParent);
+        transform.SetParent(originalParent, false);
 
         RectTransform originalRect = originalParent.GetComponent<RectTransform>();
         if (originalRect != null)
