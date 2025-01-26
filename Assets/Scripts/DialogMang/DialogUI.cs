@@ -31,10 +31,13 @@ public class DialogUI : MonoBehaviour
     // Sprite ที่จะใช้ถ้าไม่เจอ dialogName ตรงใน list
 
     [Header("Audio")]
-    public AudioSource audioSource;
+    public AudioSource audioSource; // สำหรับ Scale Up / Scale Down
     public AudioClip scaleUpClip;
     public AudioClip scaleDownClip;
-    public AudioClip typingClip;
+
+    [Header("Typing Audio")]
+    public AudioSource typingAudioSource; // เพิ่ม AudioSource สำหรับเสียงพิมพ์
+    public AudioClip typingClip; // Optional: ถ้าต้องการเสียงต่อเนื่องอื่น ๆ
 
     private int currentLineIndex = 0;
     private Dialog currentDialog;
@@ -43,19 +46,30 @@ public class DialogUI : MonoBehaviour
     private Coroutine typingCoroutine;
 
     private Action onDialogEndCallback;
+
     private void Awake()
     {
         // ตั้งค่า scale เริ่มต้นให้เป็น 0
         transform.localScale = Vector3.zero;
+
+        // ตรวจสอบ AudioSource
+        if (audioSource == null)
+        {
+            Debug.LogWarning("DialogUI: AudioSource for scale UI is not assigned!");
+        }
+
+        if (typingAudioSource == null)
+        {
+            Debug.LogWarning("DialogUI: Typing AudioSource is not assigned!");
+        }
     }
 
     public void StartDialog(string dialogName, int[] dialogID, Action onEndDialogCallback = null)
     {
-       
-       
         // 1) กำหนด Sprite ตาม dialogName
         dialogImage.sprite = GetSpriteByDialogName(dialogName);
         onDialogEndCallback = onEndDialogCallback;
+
         // 2) ตั้งค่าการทำงานของ Dialog
         gameObject.SetActive(true);
         dialogHistoryManager.ClearHistory();
@@ -109,10 +123,8 @@ public class DialogUI : MonoBehaviour
             gameObject.SetActive(false);
             dialogText.text = "End of Dialog.";
             onDialogEndCallback?.Invoke();
+            typingAudioSource.Stop();
         }));
-
-       
-        
     }
 
     /// <summary>
@@ -129,10 +141,12 @@ public class DialogUI : MonoBehaviour
         {
             if (targetScale == Vector3.one && scaleUpClip != null)
             {
+                Debug.Log("Playing Scale Up Clip");
                 audioSource.PlayOneShot(scaleUpClip);
             }
             else if (targetScale == Vector3.zero && scaleDownClip != null)
             {
+                Debug.Log("Playing Scale Down Clip");
                 audioSource.PlayOneShot(scaleDownClip);
             }
         }
@@ -154,16 +168,38 @@ public class DialogUI : MonoBehaviour
     private IEnumerator TypeText(string text)
     {
         dialogText.text = "";
+
+        // เริ่มเล่นเสียงพิมพ์
+        if (typingAudioSource != null && typingClip != null)
+        {
+            typingAudioSource.clip = typingClip;
+            typingAudioSource.loop = true; // ตั้งให้ loop ถ้าต้องการเสียงต่อเนื่อง
+            typingAudioSource.Play();
+            Debug.Log("Started Typing Sound");
+        }
+
         foreach (char letter in text.ToCharArray())
         {
             dialogText.text += letter;
 
+            // ถ้าต้องการเสียงพิมพ์ per character, สามารถใช้ audioSource.PlayOneShot(typingClip) ได้
+            // แต่ถ้าใช้ looping sound, ไม่ต้องทำ
+            /*
             if (audioSource != null && typingClip != null)
             {
+                Debug.Log("Playing Typing Clip");
                 audioSource.PlayOneShot(typingClip);
             }
+            */
 
             yield return new WaitForSeconds(0.05f);
+        }
+
+        // หยุดเล่นเสียงพิมพ์เมื่อพิมพ์เสร็จ
+        if (typingAudioSource != null && typingAudioSource.isPlaying)
+        {
+            typingAudioSource.Stop();
+            Debug.Log("Stopped Typing Sound");
         }
     }
 

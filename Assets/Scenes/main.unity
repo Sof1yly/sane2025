@@ -9743,10 +9743,11 @@ MonoBehaviour:
   - dialogName: Terror
     sprite: {fileID: 21300000, guid: 5f72198a82ae018418cf0a9ba2a68e6a, type: 3}
   defaultSprite: {fileID: 21300000, guid: 5b34c8887d38b504c877661bf54a78ce, type: 3}
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 6993724391278918879}
   scaleUpClip: {fileID: 0}
   scaleDownClip: {fileID: 0}
-  typingClip: {fileID: 0}
+  typingAudioSource: {fileID: 6993724391278918879}
+  typingClip: {fileID: 8300000, guid: 75e1e6fbcefc96f4b8f9ec6e80128c03, type: 3}
 --- !u!1 &6075396653618870876
 GameObject:
   m_ObjectHideFlags: 0
@@ -9947,9 +9948,9 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
+  m_PlayOnAwake: 0
+  m_Volume: 0.4
+  m_Pitch: 0.14
   Loop: 0
   Mute: 0
   Spatialize: 0
