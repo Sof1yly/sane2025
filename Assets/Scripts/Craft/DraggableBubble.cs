@@ -22,7 +22,6 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
-        canvas = GetComponentInParent<Canvas>();
         bubbleImage = GetComponent<Image>();
 
         if (canvasGroup == null)
@@ -31,7 +30,10 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
         }
 
-        // Make the bubble fully transparent initially
+        // Get the Canvas from the parent hierarchy
+        canvas = GetComponentInParent<Canvas>();
+
+        // Initialize as fully transparent
         if (canvasGroup != null)
         {
             canvasGroup.alpha = 0f; // Fully transparent
@@ -43,14 +45,18 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private void Start()
     {
         // Save the original parent when the object starts
-        originalParent = transform.parent;
+        if (originalParent == null)
+            originalParent = transform.parent;
 
-        // Optionally set the bubble's image if you have an Image component on the same GameObject
+        // Set the bubble's image if available
         if (bubbleImage != null && bubbleData != null)
         {
             bubbleImage.sprite = bubbleData.bubbleImage;
-            bubbleImage.SetNativeSize(); // Optional: Adjust the size to match the sprite
+            bubbleImage.SetNativeSize(); // Adjust size to match sprite
         }
+
+        // Ensure the bubble matches the original parent's size initially
+        ResetToOriginalPosition();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -68,6 +74,9 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
         // Optionally, bring the bubble to the front
         transform.SetAsLastSibling();
+
+        // Optionally, scale up the bubble for visual feedback
+        rectTransform.localScale = Vector3.one * 1.1f;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -92,10 +101,22 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         if (audioSource != null && endDragSound != null)
             audioSource.PlayOneShot(endDragSound);
 
-        // Restore full transparency
-        if (canvasGroup != null)
+        // Restore full opacity only if not in originalParent
+        if (transform.parent != originalParent && canvasGroup != null)
+        {
+            canvasGroup.alpha = 1f; // Fully opaque
+        }
+        else if (canvasGroup != null)
         {
             canvasGroup.alpha = 0f; // Fully transparent
+        }
+
+        // Restore the original scale
+        rectTransform.localScale = Vector3.one;
+
+        // Restore raycasts
+        if (canvasGroup != null)
+        {
             canvasGroup.blocksRaycasts = true; // Block raycasts again
         }
 
@@ -112,10 +133,36 @@ public class DraggableBubble : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         // Move the bubble back to its original parent/slot
         transform.SetParent(originalParent);
-        rectTransform.anchoredPosition = Vector2.zero;
+
+        RectTransform originalRect = originalParent.GetComponent<RectTransform>();
+        if (originalRect != null)
+        {
+            // Match anchors
+            rectTransform.anchorMin = originalRect.anchorMin;
+            rectTransform.anchorMax = originalRect.anchorMax;
+
+            // Match pivot
+            rectTransform.pivot = originalRect.pivot;
+
+            // Match size
+            rectTransform.sizeDelta = originalRect.sizeDelta;
+
+            // Reset position
+            rectTransform.anchoredPosition = Vector2.zero;
+
+            // Ensure transparency
+            SetVisibility(false);
+        }
+        else
+        {
+            Debug.LogWarning("Original parent does not have a RectTransform component.");
+        }
     }
 
-    // Optional: Method to set visibility when placed in a slot
+    /// <summary>
+    /// Sets the visibility of the bubble.
+    /// </summary>
+    /// <param name="isVisible">Whether the bubble should be visible.</param>
     public void SetVisibility(bool isVisible)
     {
         if (canvasGroup != null)
